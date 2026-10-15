@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore RaceDay.Tests/RaceDay.Tests.csproj
+
+      - name: Build
+        run: dotnet build RaceDay.Tests/RaceDay.Tests.csproj --no-restore --configuration Release
+
+      - name: Run unit tests
+        run: dotnet test RaceDay.Tests/RaceDay.Tests.csproj --no-build --configuration Release --verbosity normal
